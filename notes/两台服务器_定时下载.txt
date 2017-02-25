@@ -1,0 +1,23 @@
+用ssh连接，用生成key的方式来处理每次都需要输入密码的操作
+这里以从B机下载到A机
+1.在A虚机下操作：
+1.1运行 ssh-keygen -t rsa
+1.2在/root/.ssh 下生成id_rsa 和 id_rsa.pub 两个文件
+1.3在/root/.ssh下复制备份一份id_rsa.pub 命名为 id_rsa.pub.A（cp id_rsa.pub id_rsa.pub.A）
+
+2.在B虚机操作：
+2.1运行 ssh-keygen -t rsa
+2.2在/root/.ssh 下创建authorized_keys文件
+2.3把A虚机的id_rsa.pub.A 文件 传到  /root/.ssh 下（scp A机账号@A机ip:/root/.ssh/id_rsa.pub.A /root/.ssh<这里需要输入密码的>）
+2.4通过 cat 命令 把id_rsa.pub.A 写到 authorized_keys 文件中（cat id_rsa.pub.A  >>  authorized_keys）
+
+到这里执行下载脚本时就不需要输入密码啦！但要记住创建好以后，务必手动执行脚本一次，会出现警告信息，yes一次之后，就不会再次出现啦！
+
+3.在B机编辑下载脚本(这里建议选择好路径，例：/home/demo/load.sh)
+load.sh
+scp A机账号@A机ip:/home/test/test.txt /home/test;(把A机的/home/test/test.txt 下载到B机的/home/test下)
+
+4.在/ect/crontab/下建定时情况的脚本,每个周日的上午8点开始load文件
+* 8 * * 0 /home/dhf/load.sh
+
+end，撒花！（这里个人理解是永久赋予访问权限了，不知道是否有安全问题？？？？）
