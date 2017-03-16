@@ -1,0 +1,4 @@
+1.创建实体类，Teacher,Classes,Student
+2.Dao接口里写getClass方法
+3.mapper.xml文件里配置方法实现
+暂时写这些，后面具体书写
