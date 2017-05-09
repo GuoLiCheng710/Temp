@@ -1,6 +1,6 @@
-#notes文件下，是每天记录的知识！！！
-#稍后编辑
-#[点我点我有惊喜啦！](http://htmlpreview.github.io/?https://github.com/GuoLiCheng710/cloud_note/blob/master/src/main/webapp/log_in.html)
+1.notes：学习笔记
+2.utils：工具代码
 
+3.[GitHub项目预览](http://htmlpreview.github.io/?https://github.com/GuoLiCheng710/cloud_note/blob/master/src/main/webapp/log_in.html)
 
-#[呵呵呵](http://www.baidu.com)
+4.[我是超链接](http://www.baidu.com)
