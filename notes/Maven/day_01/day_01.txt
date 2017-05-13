@@ -1,0 +1,32 @@
+1.在maven安装并配置好之后，执行mvn help:system，这时就会执行一个真正的任务。
+2.在项目目录下，执行mvn clean 清除编译文件任务，mvn compile 编译任务，也可以执行mvn clean compile
+3.maven项目流程
+	3.1：编写POM
+	3.2：编写项目主代码src/main/java,编写完毕后运行mvn clean compile 就会执行编译
+	3.3：编写测试代码src/test/java,编写完毕之后运行mvn clean test 就会执行测试（这里会用result保存方法返回值，利用assertEquals("目标值",result);来检验测试结果。需要import static org.junit.Assert.assertEquals;(执行test之前会先执行compile)
+	3.4：打包和运行 mvn clean package(打包)mvn clean install(安装，把被本项目打包安装到本地maven仓库，之后其他maven项目就可以使用它，执行任务可以发现，执行install时，会依次执行compile,test,package,install)
+	install后的jar包如果想要能够执行（java -jar xxx.jar），必须在pom中加入插件：
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.2.1</version>
+				<executions>
+				  <execution>
+					<phase>package</phase>
+					<goals>
+					  <goal>shade</goal>
+					</goals>
+					<configuration>
+					  <transformers>
+						<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+						  <mainClass>com.dhf.helloworld.HelloWorld</mainClass>
+						</transformer>
+					  </transformers>
+					</configuration>
+				  </execution>
+				</executions>
+			  </plugin>
+		</plugins>
+	</build>

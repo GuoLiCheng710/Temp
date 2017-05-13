@@ -1,0 +1,14 @@
+#查看活动的session
+select * from v$sessions where state='ACTIVE';
+
+#kill id为140402282932544的session
+sp_close_session(140402282932544)
+
+#命令行链接数据库
+./disql GSZJ12315/GSZJ12315@ip:port
+
+#导出表数据（dexp在/dmdba/dmdbms/bin）
+./dexp USERID=GSZJ12315/GSZJ12315 DIRECTORY=/data/dmdata/dmpfile  FILE=QYXX.dmp LOG=DEXP_QYXX.log TABLES=YWGL_QYXX_1,YWGL_QYXX_2,YWGL_QYXX_3
+
+#导入表数据
+./dimp	USERID=GSZJ12315/GSZJ12315@目标服务器ip:5236	FILE=QYXX.dmp	DIRECTORY=/data/company_info LOG=dimp_info.log	INDEXFIRST=Y TABLES=YWGL_QYXX_1,YWGL_QYXX_2,YWGL_QYXX_3 IGNORE=Y	 LOG_WRITE=Y
