@@ -30,3 +30,21 @@
 			  </plugin>
 		</plugins>
 	</build>
+	
+4.利用Archetype构建maven项目
+	4.1：mvn archetype:generate
+	4.2:
+	
+5.Maven坐标是通过一系列元素定义的，他们分别是
+groupid：最好定义到项目（org.sonatype.nexus)
+artifactid：最好是（项目名-模块名）的模式（nexus-indexer)
+version:Maven项目当前所处的版本
+packaging：定义Maven项目的打包方式（默认为jar）
+classifier:帮助定义构建输出的一些附属构建（xxx.javadoc.jar,xxx-source.jar等），不能直接定义，因为附属构建不是项目直接默认生成的。
+
+6.依赖
+
+
+
+
+

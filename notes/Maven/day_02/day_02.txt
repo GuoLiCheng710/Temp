@@ -1,0 +1,229 @@
+1---
+pom中配置远程仓库
+<project>
+	....
+	<repositories>
+		<repository>
+			<id>jboss</id>
+			<name>JBOSS Repository</name>
+			<url>http://repository.jboss.com/manven2/</url>
+			<releases>
+				<enabled>true</enabled>
+				<!--配置Maven从远程仓库检查更新的频率-->
+				<updatePolicy>daily</updatePolicy>
+				<!--配置Maven检查检验和文件的策略-->
+				<checksumPolicy>ignore</checksumPolicy>
+			<releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<layout>default</layout><!-- 表示仓库是Maven2及Maven3的默认布局 -->
+		</repository>
+	</repositories>
+	..../.
+</project>
+
+2---
+远程仓库认证
+在setting.xml中配置
+<settings>
+	....
+	<servers>
+		<server>
+			<id>my-proj</id>
+			<username>dhf</username>
+			<password>dhf</password>
+		<server>
+	</servers>
+	....
+</settings>
+
+3---
+部署至远程仓库,pom中配置构建部署地址
+<project>
+	.....
+	<distributionManagement>
+		<repository>
+			<id></id>
+			<name></name>
+			<url></url>
+		</repository>
+		<snapshotRepository>
+			<id></id>
+			<name></name>
+			<url></url>
+		</snapshotRepository>
+	</distributionManagement>
+	.....
+</project>
+
+id :远程仓库的唯一标识
+name ：为了方便人阅读
+url ：表示该仓库的地址
+往远程部署构建的时候，一般需要认证，其配置方式为在setting.xml中配置，具体看上面
+
+！！！----配置正确后，执行mvn clean deploy
+
+4---
+	Maven生命周期：编译--测试--打包--部署编译--测试--打包--部署
+
+	Maven有三套生命周期：clean、default、site,每套生命周期有不同的阶段，后面的阶段依赖于前面的阶段。
+	clean：目的就是清理项目
+		pre-clean、
+		clean、
+		post-clean
+	default：
+		validate，
+		initialize,
+		generate-sources,
+		process-sources(处理项目主资源文件，一般来说，是对src/main/resoutces目录的内容进行变量替换等工作后，复制到项目输出的主classpath目录中)，
+		generate-resoutces,
+		process-resouces,
+		compile(编译项目的主源码。一般来说，是编译src/main/java目录下的java文件至项目输出的主classpath目录中)
+		process-classes,
+		generate-test-sources,
+		process-test-sources(处理测试资源文件。一般来说，是对src/test/resoutces目录的内容进行变量替换等工作后，复制到项目输出的测试classpath目录中)
+		generate-test-resources,
+		process-test-resources,
+		test-compile(编译项目的测试代码。一般来说，是便宜src/test/java目录下的java文件至项目输出的测试classpath目录中classpath目录中)
+		process-test-classes,
+		test(使用单元测试框架运行测试，测试代码不会被打包或部署)
+		prepare-package,
+		package(接受编译好的代码，打包成可发布的格式，如jar)
+		pre-integration-test,
+		integration-test,
+		post-integration-test,
+		verify,
+		install(将包安装到maven本地仓库，供本地其他maven项目使用)
+		deploy（将最终的包复制到远程仓库，供其它开发人员和Maven项目使用）
+	site：目的是建立和发布项目站点。
+		pre-site，
+		site，
+		post-site，
+		site-deploy，将生成的项目站点发布到服务器上
+
+		
+5----
+	5.1Maven仅仅是定义了抽象的生命周期，具体的任务是由插件完成的。
+	5.2每个插件可以完成很多任务的。每个功能就是一个插件目标。
+	5.3Maven的生命周期与插件的目标绑定，已完成实际的构建任务。Maven已经在核心为一些主要的生命周期阶段绑定了很多插件目标。
+	5.4自定义绑定
+	<build>
+		<plugins>
+			<plugin>
+				<groupId></groupId>
+				<artifactId></artifactId>
+				<version></version>
+				<executions>
+					<execution><!--配置一个任务-->
+						<id></id><!--配置一个ID-->
+						<phase></phase><!--配置一个生命周期-->
+						<goals>
+							<goal></goal><!--配置要执行的插件目标-->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+6----
+	POM中插件全局配置，例子：配置maven-compiler-plugin,告诉它编译java1.7版本的源文件，生成jvm1.7兼容的字节码文件
+	<project>
+	....
+	<build>
+		<plugins>
+			<plugin>
+				<groupId></groupId>
+				<artifactId></artifactId>
+				<version></version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	......
+	</project>
+	
+7----
+	POM中对插件进行任务配置
+	<project>
+	....
+	<build>
+		<plugins>
+			<plugin>
+				<groupId></groupId>
+				<artifactId></artifactId>
+				<version></version>
+				<executions>
+					<execution>
+						<id></id><!--配置一个ID-->
+						<phase></phase><!--配置一个生命周期-->
+						<goals>
+							<goal></goal><!--配置要执行的插件目标-->
+						</goals>
+						<configuration><!--这是一个特定任务配置项，-->
+							<tasks>
+								<echo>HELLO WORLD</echo>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+				
+			</plugin>
+		</plugins>
+	</build>
+	......
+	</project>
+	
+8----
+mvn help: describe-Dplugin = org.apache.maven.plugins:maven-compiler-plugin:2.1
+
+9----
+	Maven的运行机制：
+	9.1配置插件的远程仓库（Maven中有内置插件仓库配置，一般情况下是不需要单独配置的，中央仓库的插件基本上就已经够用了）
+	
+10----
+	聚合与继承：
+	聚合是为了把一个项目的所有模块聚合到一起，这样就可以一起构建整个项目。
+	继承是为了消除重复配置。
+	聚合模块和集成模块其本身也是一个maven项目，也是作为整个项目的一个模块（这里其实可以理解为管理模块）。
+	10.1聚合模块的packaging值配置为pom
+	10.2每个module都是要聚合的项目相对于聚合模块的pom的相对路径
+	
+	10.3集成模块的packaging值配置为pom
+		这里其实有个小细节，在配置父模块的pom时要善于利用归并依赖等小技巧。
+	10.4在子模块中配置
+		<parent>
+			<groupId></groupId>
+			<artifactId></artifactId>
+			<version></version>
+			<relativePath></relativePath>
+		</parent>
+		这里前三项都是父模块的对应的值，relativePaht是父模块POM的相对路径，其默认值是../pom.xml。项目构建时，maven会先根据relativePath检查父pom，如果没有，再从本地仓库查找。
+		子模块会隐式的继承父模块的groupId和version，artifactId需要自行定义，避免造成冲突（注：这里其实可以自定义所有的，但是已经继承了，这样方便了很多）
+		
+	10.5父模块中把dependencyManagement加套在dependencies外边，子模块只要生命groupId和artifactId就可以了，这样便于jar包的版本管理，可以保证项目使用同一jar包的版本是统一的。还有可以在另一个模块的pom中利用import来引入依赖配置，实现于继承一样的效果。例子：
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId></groupId>
+				<artifactId></artifactId>
+				<version></version>
+				<type>pom</type>	<!---->
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	这里由于import的特殊性，一般都是指向打包类型为pom的模块，所有type一般都是pom。这样如果有多个项目的依赖都是相同的，就可以准们配置dependencyManagement,方便管理。
+	
+
+
+
+
+
+
+
+
+
